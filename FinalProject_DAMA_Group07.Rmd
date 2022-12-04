@@ -1,0 +1,1656 @@
+---
+title: "Group-07 Project - Canadian Internet Usage Survey"
+
+author: "Group 07"
+date: '2022-11-30'
+output: 
+  html_document: 
+    toc: yes
+    toc_float: true
+    number_sections: yes
+    toc_depth: 6
+    df_print: kable
+    theme: united
+    highlight: tango
+---
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+#knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.width=10, fig.height=8)
+```
+
+# GROUP MEMBERS
+```{r,message=FALSE,echo=FALSE,warning=FALSE}
+library(insight)
+library(kableExtra)
+tab <- matrix(c(110069073, 110065921, 110079353, 110061975, 110071189), ncol=1, nrow = 5)
+colnames(tab) <- c('StudentID')
+rownames(tab) <- c('Gaurav Rajesh Chawla','Kajal Shah','Muskan Nagpal','Samidha Khatri', 'Sushma Gunapu')
+tab <- as.table(tab)
+tab %>%
+  kbl() %>%
+  kable_paper("hover", full_width = F)
+```
+
+#  LIST OF LIBRARIES
+
+The libraries we used to create tables, format material, and style graphs for our exploratory analysis are listed below:
+
+library(ggplot2)   
+
+library(dplyr)   
+
+library(viridis)  
+
+library (DescTools) 
+
+library(insight)
+
+library(kableExtra)
+
+# INTRODUCTION
+
+## Dataset overview
+
+The dataset for this research was the Canadian Internet Use Survey (CIUS), which offers statistics #on the adoption, use, and location of internet access for people over the age of 15 living in Canada's #ten provinces. The data set comprises 23 dimensions and includes information on variables such as #province, region, age, gender, education levels, internet use, and accessibility.
+
+All of the aforementioned data is susceptible to a wide range of exploratory and predictive analysis methods, the outcomes of which can inform evidence-based policymaking, resource management, and development planning across the country and provide internationally comparable statistics on internet use and access trends in Canada.
+
+The following are a few of the benefits:
+
+Increase the availability and affordability of high-speed Internet for homes by coordinating government initiatives in this area.
+
+Make rules to safeguard people's personal information and identity when using the internet.
+
+Find out what's holding people back so you can help them get connected to the web and reap the benefits of developing technologies.
+
+Get involved with global efforts like the Sustainable Development Goals and the OECD's Going Digital Project to measure and benchmark Canada's progress in the digital realm.
+
+## Data Preprocessing
+
+This dataset required pre-processing prior to analysis, so we used a few pre-processing techniques to #Improve the dataset and the efficiency of our results.
+
+### Renaming Columns
+
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+
+#importing data 
+nonUse <- read.csv("nonUse.csv", header = TRUE, sep = ",")   
+
+
+#---------------Data Preprocessing : renaming columns------------------   
+
+# Import ggplot2   
+library(ggplot2)   
+library(dplyr)   
+library(viridis)  
+library (DescTools) 
+
+#Renaming “G_URBRUR” column as “community_characteristics”  
+nonUse <- rename(nonUse, community_characteristics = G_URBRUR) 
+
+#Renaming “GCAGEGR6” column as “ageGroup”  
+nonUse <- rename(nonUse, ageGroup = GCAGEGR6)   
+
+# Renaming “CSEX” column as “sex”  
+nonUse <- rename(nonUse, sex = CSEX)    
+
+# Renaming “G_CEDUC” column as “eduLevel”  
+nonUse <- rename(nonUse, eduLevel = G_CEDUC)   
+
+# Renaming “G_CSTUD” column as “is_student” 
+nonUse <- rename(nonUse, is_student = G_CSTUD)   
+
+# Renaming “G_CLFSST” column as “labour_force_status” 
+nonUse <- rename(nonUse, labour_force_status = G_CLFSST)   
+
+# Renaming “GFAMTYPE” column as “household_type” 
+nonUse <- rename(nonUse, household_type = GFAMTYPE)   
+
+# Renaming “G_HHSIZE” column as “people_in_household” 
+nonUse <- rename(nonUse, people_in_household = G_HHSIZE)   
+
+# Renaming “G_HEDUC” column as “education_in_household” 
+nonUse <- rename(nonUse, education_in_household = G_HEDUC)   
+
+# Renaming “G_HSTUD” column as “student_in_household” 
+nonUse <- rename(nonUse, student_in_household = G_HSTUD)   
+
+# Renaming “EV_Q01” column as “ever_used_internet” 
+nonUse <- rename(nonUse, ever_used_internet = EV_Q01)   
+
+# Renaming “EV_Q02” column as “years_internetUsed” 
+nonUse <- rename(nonUse, years_internetUsed = EV_Q02)   
+
+# Renaming “NU_Q01” column as “internetUse_in_next12months” 
+nonUse <- rename(nonUse, internetUse_in_next12months = NU_Q01)   
+
+# Renaming “NU_Q02A” column as “reason_cost” 
+nonUse <- rename(nonUse, reason_cost = NU_Q02A)   
+
+# Renaming “NU_Q02B “ column as “reason_limitedAccess” 
+nonUse <- rename(nonUse, reason_limitedAccess = NU_Q02B )   
+
+# Renaming “NU_Q02C “ column as “reason_difficultUse” 
+nonUse <- rename(nonUse, reason_difficultUse = NU_Q02C )   
+
+# Renaming “NU_Q02D “ column as “reason_notNeeded” 
+nonUse <- rename(nonUse, reason_notNeeded = NU_Q02D )   
+
+# Renaming “NU_Q02E “ column as “reason_notEnoughTime” 
+nonUse <- rename(nonUse, reason_notEnoughTime = NU_Q02E )   
+
+# Renaming “NU_Q02F “ column as “reason_LackofSkills” 
+nonUse <- rename(nonUse, reason_LackofSkills = NU_Q02F )   
+
+# Renaming “NU_Q02I “ column as “reason_noInterest” 
+nonUse <- rename(nonUse, reason_noInterest = NU_Q02I )   
+
+# Renaming “NU_G02K “ column as “reason_senior” 
+nonUse <- rename(nonUse, reason_senior = NU_G02K )   
+
+# Renaming “NU_G02 “ column as “other” 
+nonUse <- rename(nonUse, other = NU_G02 )   
+
+
+write.csv(nonUse,"nonUseFinal.csv")   
+df <- read.csv("nonUseFinal.csv")   
+df <- df[,-1]   
+
+```
+
+### Removing nulls and irrelavant data
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+#--------------------------------------REMOVING Null Values and irrelevant data-------------------------------------------
+
+#replace all the dont know , refusal etc options with N/A   
+remove <- function(startCol, endCol) {   
+  for (i in startCol:endCol) {   
+    df[, i] <<- ifelse(df[, i] == 6, NA, df[, i])   
+    df[, i] <<- ifelse(df[, i] == 7, NA, df[, i])   
+    df[, i] <<- ifelse(df[, i] == 8, NA, df[, i])   
+    df[, i] <<- ifelse(df[, i] == 9, NA, df[, i])   
+  }   
+  
+}   
+
+#call the above function   
+remove(14,24)   
+
+
+#remove the rows that contain N/A in the Nonuse questions:   
+
+df <- df[complete.cases(df[ , 15:24]),]   
+
+df <- df[,-14] #since df is all NA, remove that column   
+
+write.csv(df,"df.csv")   
+
+```
+
+## Analysis Approach Overview
+
+The Canadian Internet Use Survey (CIUS) dataset used in this analysis is a categorical dataset with mostly nominal and ordinal variables. For exploratory analysis, we would like to use contingency tables, relative frequency tables, bar charts, mosaic plots, density plots, and so on as part of our analysis. In addition, we are considering logistic and chi-square tests for predictive analysis in order to understand the relationship between variables and draw effective conclusions and #recommendations.
+
+
+# EXPLORATORY ANALAYSIS
+
+We are trying to explore these questions:
+
+% of Canadians don’t use the Internet? Who are they (Age,education level,sex,labour force status) and where are they located (Province)?  
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+
+#-------------------------------- EXPLORATORY ANALYSIS----------------------------------------------- 
+
+
+# X % of Canadians don’t use the Internet? Who are they (Age,education level,sex,labour force status) and where are they located (Province)?  
+
+
+```
+
+## What is proportion of men and women who took this survey?
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+#1) What is proportion of men and women who took this survey?   
+
+
+
+sex_table <- table(df$sex) #table of counts    
+
+
+
+proportion_table <- prop.table(sex_table)#table of proportion   
+
+
+
+
+
+piepercent<- round(100*sex_table/sum(sex_table), 1)    
+
+
+
+piepercent   
+
+
+
+#Create a pie chart   
+
+
+
+pie(proportion_table,labels =piepercent, main = "Gender pie chart", col = rainbow(length(proportion_table)))   
+
+
+
+legend("topright", c("Male","Female"), cex = 0.6,fill = rainbow(length(proportion_table)))   
+
+
+
+  
+
+
+
+
+```
+
+### Findings
+
+* We have 57% of females and 43% males in the given survey data 
+
+## Can you determine the proportion of students in dataset?
+ 
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+
+#2)To determine the proportion of students in dataset   
+
+
+
+student_table <- table(df$is_student) #table of counts    
+student_table   
+
+
+
+proportion_stutable <- prop.table(student_table)#table of proportion   
+piepercent1<- round(100*student_table/sum(student_table), 1)    
+
+
+
+piepercent1   
+
+
+
+#Create a pie chart   
+
+
+
+pie(student_table,labels =piepercent1, main = "Student pie chart", col = rainbow(length(student_table)))   
+
+
+
+legend("topright", c("Yes","No"), cex = 0.6,fill = rainbow(length(proportion_table)))  
+
+
+
+
+```
+
+### Findings
+
+* We have only 0.4% students and 99.6% of non students in the given survey data
+ 
+## What is the proportion of people for whom cost is a major factor?
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+
+# 3) Proportion of people for whom cost is a major factor    
+
+
+
+cost_table <- table(df$reason_cost) #table of counts    
+
+
+
+proportion_table <- prop.table(cost_table)#table of proportion   
+
+
+
+piepercent<- round(100*cost_table/sum(cost_table), 1)    
+
+
+
+piepercent   
+
+
+
+#Create a pie chart   
+
+
+
+pie(proportion_table,labels =piepercent, main = "Proportion of people based on cost factor", col = rainbow(length(proportion_table)))   
+
+
+
+legend("topright", c("Yes","No"), cex = 0.6,fill = rainbow(length(proportion_table)))   
+
+
+
+
+```
+
+### Findings
+
+* Overall, 8.1% said cost is a a major factor while 91.9% Canadians responded as NO.Hence, we can say that cost is not a crucial factor for not using internet based on the survey response.
+
+## What is the relation between education level and difficulty use?
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+
+# 4) Relation between education level and difficulty use   
+
+
+
+table1=as.table(table(df$eduLevel,df$reason_difficultUse))   
+
+
+
+proportion <- prop.table(table1)   
+
+
+
+barplot(proportion, beside=T, legend=T, main="Relation between education level and difficulty use")   
+
+
+
+```
+
+### Findings
+
+* We have found that as the education level of a person increases, the difficulty of using the internet decreases.
+
+## What is the proportion of people for whom lack of skills is a major factor?
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+
+
+# 5) Proportion of people for whom lack of skills is a major factor    
+
+
+
+LoSkills_table <- table(df$reason_LackofSkills) #table of counts    
+
+proportion_table <- prop.table(LoSkills_table)#table of proportion   
+
+
+
+piepercent<- round(100*LoSkills_table/sum(LoSkills_table), 1)    
+
+piepercent   
+
+
+
+pie(proportion_table,labels =piepercent, main = "Proportion of people based on lack of skills", col = rainbow(length(proportion_table)))   
+
+
+
+legend("topright", c("No","Yes"), cex = 0.6,fill = rainbow(length(proportion_table)))   
+
+
+
+```
+
+### Findings
+* There are 82.4% of people for whom lack of skills is major factor.
+
+## What percentage of people have limited internet access across various regions?
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+#Bar plot to find the percentage of people with limited Internet access across various Regions  
+
+
+
+df1<-data.frame(df$reason_limitedAccess,df$REGION)  
+
+
+
+Table<-with(df1,table(df$reason_limitedAccess,df$REGION))  
+
+
+
+bargraph1 <- barplot(prop.table(Table) * 100,beside=T,legend=T , ylim = c(0, 30),   
+                     
+                     
+                     
+                     main = "% of People with limited Internet Access across various regions",   
+                     
+                     
+                     
+                     col = c("coral1","darkseagreen3" ))  
+
+
+
+
+```
+
+### Findings
+
+* Saskatwan has 23%  people and 20% in Manitoba as compared to other provinces that do not use internet for limited access.
+
+## What percentage of people have difficulty in internet use across various age groups?
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+
+#Bar plot to find percentage of people with difficulty in Internet use across various age groups  
+
+
+df$ageGroup <- replace(df$ageGroup , df$ageGroup =="1" ,"16 to 24")  
+
+
+
+df$ageGroup <- replace(df$ageGroup , df$ageGroup =="2" ,"25 to 34")  
+
+
+
+df$ageGroup <- replace(df$ageGroup , df$ageGroup =="3" ,"35 to 44")  
+
+
+
+df$ageGroup <- replace(df$ageGroup , df$ageGroup =="4" ,"45 to 54")  
+
+
+
+df$ageGroup <- replace(df$ageGroup , df$ageGroup =="5" ,"55 to 64")  
+
+
+
+df$ageGroup <- replace(df$ageGroup , df$ageGroup =="6" ,"65 and older")  
+
+
+
+df2<-data.frame(df$reason_difficultUse,df$ageGroup)  
+
+
+
+Table<-with(df2,table(df$reason_difficultUse,df$ageGroup))  
+
+
+
+bargraph2 <- barplot(prop.table(Table) * 100,beside=T,legend=T , ylim = c(0, 60),   
+                     
+                     
+                     
+                     main = "% of People with difficulty in Internet use across various age groups",   
+                     
+                     
+                     
+                     col = c("deepskyblue2","deeppink3"))  
+
+
+
+```
+
+### Findings
+
+* We have found that, It is not difficult for people to use internet across all the age-groups.
+
+## What percentage of people do not use the internet due to lack of skills across various age groups?
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+#Bar plot for percentage of people who do not use the Internet due to lack of skills across various age groups  
+
+
+
+df$ageGroup <- replace(df$ageGroup , df$ageGroup =="1" ,"16 to 24")  
+
+df$ageGroup <- replace(df$ageGroup , df$ageGroup =="2" ,"25 to 34")  
+
+df$ageGroup <- replace(df$ageGroup , df$ageGroup =="3" ,"35 to 44")  
+
+df$ageGroup <- replace(df$ageGroup , df$ageGroup =="4" ,"45 to 54")  
+
+df$ageGroup <- replace(df$ageGroup , df$ageGroup =="5" ,"55 to 64")  
+
+df$ageGroup <- replace(df$ageGroup , df$ageGroup =="6" ,"65 and older")  
+
+df3<-data.frame(df$reason_LackofSkills,df$ageGroup)  
+
+Table<-with(df3,table(df$reason_LackofSkills,df$ageGroup))  
+
+bargraph3 <- barplot(prop.table(Table) * 100,beside=T,legend=T , ylim = c(0, 60),   
+                     
+                     
+                     
+                     main = "% of People who do not use the Internet due to lack of skills across various age groups",   
+                     
+                     
+                     
+                     col = c("green3","blue3"))  
+
+
+
+
+```
+
+### Findings
+
+* We have found that lack of skills is also not a factor affecting the internet usage across all the age groups.
+
+## What percentage of people have cost is a major factor for internet usage across across various regions?
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+
+#Bar plot for percentage of people for whom cost is a major factor for Internet usage across across various Regions  
+
+
+
+df4<-data.frame(df$reason_cost,df$REGION)  
+
+
+
+Table<-with(df4,table(df$reason_cost,df$REGION))  
+
+
+
+bargraph4 <- barplot(prop.table(Table) * 100,beside=T,legend=T , ylim = c(0, 30),   
+                     
+                     
+                     
+                     main = "% of People who do not use the Internet due to cost across various regions",   
+                     
+                     
+                     
+                     col = c("deepskyblue3","darkseagreen3" ))  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+```
+
+### Findings
+
+* We have found that cost is not considered as a major factor for internet usage across various regions.
+
+
+## Which province has highest yes when it comes to cost and Limited Access for not using internet?
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+#apply filter   
+
+Nfw <- filter(df, df$PROVINCE == "10",df$reason_cost == 1 | df$reason_cost == 2)   
+
+Nfw_table<- table(Nfw$reason_cost,Nfw$reason_limitedAccess)   
+
+rownames(Nfw_table)<-c("Cost = Yes","Cost =No")    
+
+colnames(Nfw_table)<-c("Limited Access = Yes"," Limited Access = No")   
+
+Nfw_table   
+
+proportion_Nfw <- prop.table(Nfw_table)#table of proportion   
+
+proportion_Nfw   
+
+barplot(proportion_Nfw,beside = T,legend=T,main = "Barplot for Newfoundland and Labrador")   
+
+
+
+#there are only 6% who said yes for both, 18% for limited access   
+
+#apply filter   
+
+pei <- filter(df, df$PROVINCE == "11",df$reason_cost == 1 | df$reason_cost == 2)   
+
+pei_table<- table(pei$reason_cost,pei$reason_limitedAccess)   
+
+rownames(pei_table)<-c("Cost = Yes","Cost =No")    
+
+colnames(pei_table)<-c("Limited Access = Yes"," Limited Access = No")   
+
+pei_table   
+
+proportion_pei <- prop.table(pei_table)#table of proportion   
+
+proportion_pei   
+
+barplot(proportion_pei,beside = T,legend=T, main = "Barplot for Prince Edward Island")   
+
+#only 1.3% who said yes for both and 20% for limited access   
+
+#for novia scotia   
+
+ns <- filter(df, df$PROVINCE == "12",df$reason_cost == 1 | df$reason_cost == 2)   
+
+ns_table<- table(ns$reason_cost,ns$reason_limitedAccess)   
+
+rownames(ns_table)<-c("Cost = Yes","Cost =No")    
+
+colnames(ns_table)<-c("Limited Access = Yes"," Limited Access = No")   
+
+ns_table   
+
+proportion_ns <- prop.table(ns_table)#table of proportion   
+
+proportion_ns   
+
+barplot(proportion_ns,beside = T,legend=T, main = "Barplot for Nova Scotia")   
+
+#1.7% said yes for both but 17$ said limited access   
+
+#for new brunswik   
+
+nb <- filter(df, df$PROVINCE == "13",df$reason_cost == 1 | df$reason_cost == 2)   
+
+nb_table<- table(nb$reason_cost,nb$reason_limitedAccess)   
+
+rownames(nb_table)<-c("Cost = Yes","Cost =No")    
+
+colnames(nb_table)<-c("Limited Access = Yes"," Limited Access = No")   
+
+nb_table   
+
+proportion_nb <- prop.table(nb_table)#table of proportion   
+
+proportion_nb   
+
+barplot(proportion_nb,beside = T,legend=T, main = "Barplot for New Brunswik")   
+
+#only 1.2% who said yes for both but 17% said for limited access and 10% for cost   
+
+qb <- filter(df, df$PROVINCE == "24",df$reason_cost == 1 | df$reason_cost == 2)   
+
+qb_table<- table(qb$reason_cost,qb$reason_limitedAccess)   
+
+rownames(qb_table)<-c("Cost = Yes","Cost =No")    
+
+colnames(qb_table)<-c("Limited Access = Yes"," Limited Access = No")   
+
+qb_table   
+
+proportion_qb <- prop.table(qb_table)#table of proportion   
+
+proportion_qb   
+
+barplot(proportion_qb,beside = T,legend=T,main = "Barplot for Quebec")   
+
+#only 1% who said yes for both. 11% for limited access   
+
+on <- filter(df, df$PROVINCE == "35",df$reason_cost == 1 | df$reason_cost == 2)   
+
+on_table<- table(on$reason_cost,on$reason_limitedAccess)   
+
+rownames(on_table)<-c("Cost = Yes","Cost =No")    
+
+colnames(on_table)<-c("Limited Access = Yes"," Limited Access = No")   
+
+on_table   
+
+proportion_on <- prop.table(on_table)#table of proportion   
+
+proportion_on   
+
+barplot(proportion_on,beside = T,legend=T,main = "Barplot for Ontario")   
+
+#only 1% who said yes for both. 15$ for limited access and 6% for cost   
+
+mb <- filter(df, df$PROVINCE == "46",df$reason_cost == 1 | df$reason_cost == 2)   
+
+mb_table<- table(mb$reason_cost,mb$reason_limitedAccess)   
+
+rownames(mb_table)<-c("Cost = Yes","Cost =No")    
+
+colnames(mb_table)<-c("Limited Access = Yes"," Limited Access = No")   
+
+mb_table   
+
+proportion_mb <- prop.table(mb_table)#table of proportimb   
+
+proportion_mb   
+
+barplot(proportion_mb,beside = T,legend=T,main = "Barplot for Manitoba")   
+
+#mbly 0.9% who said yes for both. but 20% said yes for limited access and 6 for cost   
+
+sk <- filter(df, df$PROVINCE == "47",df$reason_cost == 1 | df$reason_cost == 2)   
+
+sk_table<- table(sk$reason_cost,sk$reason_limitedAccess)   
+
+rownames(sk_table)<-c("Cost = Yes","Cost =No")    
+
+colnames(sk_table)<-c("Limited Access = Yes"," Limited Access = No")   
+
+sk_table   
+
+proportion_sk <- prop.table(sk_table)#table of proportisk   
+
+proportion_sk   
+
+barplot(proportion_sk,beside = T,legend=T, main = "Barplot for Saskatachewan")   
+
+#skly 0.9% who said yes for both. but 23% said yes for limited access and 4 for cost   
+
+ab <- filter(df, df$PROVINCE == "48",df$reason_cost == 1 | df$reason_cost == 2)   
+
+ab_table<- table(ab$reason_cost,ab$reason_limitedAccess)   
+
+rownames(ab_table)<-c("Cost = Yes","Cost =No")    
+
+colnames(ab_table)<-c("Limited Access = Yes"," Limited Access = No")   
+
+ab_table   
+
+proportion_ab <- prop.table(ab_table)#table of proportion  
+
+proportion_ab   
+
+barplot(proportion_ab,beside = T,legend=T,main = "Barplot for Alberta",)   
+
+#ably 1.7% who said yes for both. but 15% said yes for limited access and 6% for cost   
+
+bc <- filter(df, df$PROVINCE == "59",df$reason_cost == 1 | df$reason_cost == 2)   
+
+bc_table<- table(bc$reason_cost,bc$reason_limitedAccess)   
+
+rownames(bc_table)<-c("Cost = Yes","Cost =No")    
+
+colnames(bc_table)<-c("Limited Access = Yes"," Limited Access = No")   
+
+bc_table   
+
+proportion_bc <- prop.table(bc_table)#table of proportiab   
+
+proportion_bc   
+
+barplot(proportion_bc,beside = T,legend=T,main = "Barplot for British Columbia")   
+
+
+
+
+
+
+
+
+
+```
+
+### Findings
+
+* Newfoundland and Labrador: There are only 6% who said yes for both, 18% for limited access
+* Prince Edward Island: 1.3% who said yes for both and 20% for limited access
+* New Brunswick: 1.2% who said yes for both but 17% said for limited access and 10% for cost  
+* Nova Scotia: 1.7% said yes for both but 17$ said limited access 
+* Quebec: only 1% who said yes for both. 11% for limited access  
+* Ontario: 1% who said yes for both. 15$ for limited access and 6% for cost
+* Manitoba: 0.9% who said yes for both. but 20% said yes for limited access and 6% for cost
+* Saskatchewan: 0.9% who said yes for both. but 23% said yes for limited access and 4% for cost
+* Alberta: 1.7% who said yes for both. but 15% said yes for limited access and 6% for cost 
+* British Columbia: 0.7% who said yes for both. But 9.7% said yes for limited access and 9% for cost
+
+
+
+## What are the top 4 reasons why Canadians don’t use internet? 
+
+**Aim**: We aim to find mode of each question to see what is the most frequent answer to a given question.  
+
+**Definition of Mode**: A mode is the value that appears most often in a set of data values.  
+
+**We have set of 10 non use questions**:  
+
+1.During the next 12 months, do you plan to use the Internet from any location?  
+
+2.What are the reasons you do not use the Internet? Reason:Cost (service or equipment)  
+
+3.What are the reasons you do not use the Internet? Reason:Limited access to a computer  
+
+4.What are the reasons you do not use the Internet? Reason:Internet or computer too difficult to use  
+
+5.What are the reasons you do not use the Internet? Reason:No need / not useful  
+
+6.What are the reasons you do not use the Internet? Reason:Not enough time  
+
+7.What are the reasons you do not use the Internet? Reason:Lack of skills or training  
+
+8.What are the reasons you do not use the Internet? Reason:No interest  
+
+9.What are the reasons you do not use the Internet? Reason:Age reasons/Seniors  
+
+10.What are the reasons you do not use the Internet? Reason:Other - Specify 
+
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+#creating a separate data frames for all the questions to explore exploratory data analysis on them exclusively  
+
+questions <- df[14:23]  
+
+questions[questions == "2"] <- "No"  
+
+questions[questions == "1"] <- "Yes"  
+
+#creating a separate data frame for only the reasoning questions of non usage  
+
+nousequestions <- questions [2:10]  
+
+
+#We are quite surprised to find the most frequent answer for all the above questions is NO.  
+
+mod_val <- 0  
+
+for (i in 1:ncol(questions)){  
+  
+  # calculating mode of ith column  
+  
+  mod_val <- as.character(Mode(questions[,i]))  
+  
+  cat (" Most frequent answer for question", i ,":",mod_val,"\n")  
+  
+}  
+
+#Hence we move to find, what are top reasons for Non use of Internet:  
+
+#From the bar graph, we can conclude that even the most frequent answer is NO, the top reason for non usage of internet is "No interest".  
+
+#Next, followed by no need, no skills and no access are among top four reasons to not use internet.  
+
+#The least concerned reason for non usage is no time.  
+
+#From this graph, we can conclude by saying the internet providers must create campaigns, attractive deals and advertisements to create interest and need in people  
+
+barp <- barplot(prop.table(colSums(nousequestions=="Yes")) * 100,ylim = c(0, 50),  
+                
+                names.arg = c("Cost", "Access", "Difficult", "No_Need", "No_Time",  
+                              
+                              "No_Skills" , "No_Interest", "Senior" , "Other"),  
+                
+                col = c("#1A85FF","#1A85FF","#1A85FF","#1A85FF","#1AFF1A","#1A85FF","#D41159", "#1A85FF", "#1A85FF"),  
+                
+                main = "Major and Minor reason for Non use of Internet",  
+                
+)  
+
+#adding text to above bar plot  
+
+text <- round(prop.table(colSums(nousequestions=="Yes")) * 100)  
+
+text(barp, text+1 ,labels = text) 
+
+```
+
+### Findings
+
+**Hence we move to find, what are top reasons for Non use of Internet:** 
+
+* From the bar graph, we can conclude that even the most frequent answer is NO, the top reason for non usage of internet is "No interest".  
+
+* Next, followed by no need, no skills and no access are among top four reasons to not use internet.  
+
+* The least concerned reason for non usage is no time.  
+
+**From this graph, we can conclude by saying the internet providers must create campaigns, attractive deals and advertisements to create interest and need in people**
+
+
+## Where is our target audience/ Future Customers (people who will use internet in future) located in Canada?
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+
+
+#assigning values for displaying better outputs  
+
+dframe <- df  
+
+dframe[,14:23] <- replace(dframe[ , 14:23], dframe[ , 14:23]=="2" , "No")  
+
+dframe[,14:23] <- replace(dframe[ , 14:23], dframe[ , 14:23]=="1" , "Yes")  
+
+dframe$PROVINCE <- replace(dframe$PROVINCE , dframe$PROVINCE=="10" ,"Newfoundland")  
+
+dframe$PROVINCE <- replace(dframe$PROVINCE , dframe$PROVINCE=="11" ,"Prince Edward Island")  
+
+dframe$PROVINCE <- replace(dframe$PROVINCE , dframe$PROVINCE=="12" ,"Nova Scotia")  
+
+dframe$PROVINCE <- replace(dframe$PROVINCE , dframe$PROVINCE=="13" ,"New Brunswick")  
+
+dframe$PROVINCE <- replace(dframe$PROVINCE , dframe$PROVINCE=="24" ,"Quebec")  
+
+dframe$PROVINCE <- replace(dframe$PROVINCE , dframe$PROVINCE=="35" ,"Ontario")  
+
+dframe$PROVINCE <- replace(dframe$PROVINCE , dframe$PROVINCE=="46" ,"Manitoba")  
+
+dframe$PROVINCE <- replace(dframe$PROVINCE , dframe$PROVINCE=="47" ,"Saskatchewan")  
+
+dframe$PROVINCE <- replace(dframe$PROVINCE , dframe$PROVINCE=="48" ,"Alberta")  
+
+dframe$PROVINCE <- replace(dframe$PROVINCE , dframe$PROVINCE=="59" ,"British Columbia") 
+
+#Since, we found out what are top reasons for non usage of customers, next we are interested in finding where are our potential future customers  
+
+#From the bar graph, we see Ontario province has majority of potential customers followed by Manitoba and Alberta. The province with least potential customers is Prince Edward Island  
+
+cust1 <- dframe[ dframe$internetUse_in_next12months =='Yes', ]  
+
+Table2<- with(dframe,table(cust1$PROVINCE))  
+
+cust_bar <- barplot(prop.table(Table2) * 100 , ylim = c(0, 40),  
+                    
+                    col = c("#1A85FF","#1A85FF","#1A85FF","#1A85FF","#1A85FF","#1A85FF","#1AFF1A","#D41159","#1A85FF", "#1A85FF", "#1A85FF"),  
+                    
+                    main = "Future customers in various province")  
+
+ 
+
+#After finding potential customers, we want to explore what percentage of people in each province answered yes/no for internet usage in next 12 months  
+
+#From the bar graph, we can say most of the respondents from each province voted more for No rather than yes  
+
+#Ontario and Quebec has almost same number of respondents who said yes, whereas Ontario has more respondents who said no when compared to Quebec  
+
+df1<-data.frame(dframe$internetUse_in_next12months,dframe$PROVINCE)  
+
+Table<-with(df1,table(dframe$internetUse_in_next12months,dframe$PROVINCE))  
+
+barplot1 <- barplot(prop.table(Table) * 100,beside=TRUE,legend=TRUE , ylim = c(0, 30),  
+                    
+                    main = "Percentage of People using internet in next 12 months across various provinces",  
+                    
+                    col = c("#D41159","#1AFF1A" )) 
+
+
+
+
+```
+
+### Findings
+*Since, we found out what are top reasons for non usage of customers, next we are interested in finding where are our potential future customers*  
+
+* From the bar graph, we see Ontario province has majority of potential customers followed by Manitoba and Alberta. The province with least potential customers is Prince Edward Island  
+* After finding potential customers, we want to explore what percentage of people in each province answered yes/no for internet usage in next 12 months  
+* From the bar graph, we can say most of the respondents from each province voted more for No rather than yes  
+* Ontario and Quebec has almost same number of respondents who said yes, whereas Ontario has more respondents who said no when compared to Quebec  
+
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+```
+
+# PREDICTIVE ANALYSIS
+* The Predictive Analysis of this section is divided into 3 parts: 
+* `Chi square test of independence` - For all current Non Users in our dataset, Categorical variables based on `demographics` (such as age,gender,etc) are used to determine its relationship and association with use of internet in the next 12 months.
+* `Logistic regression` - For all current Non Users in our dataset, models have been developed to `predict the reasons` significantly impact the likelihood of using internet in the future.
+* `Decision Tree` - To predict the 'probability of a person using internet in the next 12 months from any location' based on analysis of `chi square test` as well as `demographics` such as Age, Sex, Education Level and labour force status.
+
+## Chisquare test of independence
+- *Aim* : To determine whether two categorical variables (Internet use in next 12 months from any location v/s Sex,age group,province, education level, household) are likely to be related or not.
+- *Explanation* : 
+- Null Hypothesis :The two categorical variables are independent of each other. 
+- Alternative Hypothesis : The two categorical variables are not independent of each other.
+A correlation and a mosaic plot is plotted to interpret the association(positive,negative or neutral) between rows and columns.
+
+#### Chi Square Test of Independence : Sex and Internet use in next 12 months
+
+##### -Null Hypothesis: Sex and Internet use in next 12 months for current non-internet users are independent.
+##### -Alternative Hypothesis: Sex and Internet use in next 12 months for current non-internet users are independent.
+
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+library(corrplot)
+library(formattable)
+library(kableExtra)
+library(knitr)
+library(insight)
+chi_df <- read.csv("df.csv")
+
+# Gender and internet use in 12 months
+
+#renaming row and column names
+
+chi_df$sex[chi_df$sex== "1"] <- "Male"
+
+chi_df$sex[chi_df$sex== "2"] <- "Female"
+
+chi_df$internetUse_in_next12months[chi_df$internetUse_in_next12months== "1"] <- "Yes"
+
+chi_df$internetUse_in_next12months[chi_df$internetUse_in_next12months== "2"] <- "No"
+
+#creating dummy data frame to create table
+
+fk_data1 <- data.frame(x1 = chi_df$sex ,
+
+x2 = chi_df$internetUse_in_next12months)
+
+#creating contingency table
+
+table_1 <- table(fk_data1$x1, fk_data1$x2)
+
+#print.table(table_1)
+
+#computing chisq static
+
+chisq_1 <- chisq.test(table_1)
+
+chisq_1
+
+#printing X^2
+
+#chisq_1$statistic
+
+#observed counts
+
+chisq_2 <- chisq_1$observed
+#expected counts
+expected <- round(chisq_1$expected,2)
+
+table_1 %>%
+  kbl(caption = "Contingency table of observed values for sex and internet use in next 12 month") %>%
+  kable_paper("hover", full_width = F)
+
+expected %>%
+  kbl(caption = "Contingency table of expected values for sex and internet use in next 12 month") %>%
+  kable_paper("hover", full_width = F)
+#contribution in percentage
+contrib_1 <- 100*chisq_1$residuals^2/chisq_1$statistic
+contrib_1 <- round(contrib_1, 3)
+# printing the p-value
+
+#chisq_1$p.value
+
+#Visualization 
+corrplot(contrib_1, is.cor = FALSE)
+#defining alpha
+
+sigLevel <- 0.05
+
+if (chisq_1$p.value <= sigLevel ){
+
+print("Reject the nullhypothesis. Sex and future internet use are not independent of each other. There is some relationship between sex and use of internet")
+
+} else {
+
+print("Fail to reject the null. Sex and future internet use are independent of each other.")
+
+}
+```
+
+#### Chi Square Test of Independence : Age group and Internet use in next 12 months
+
+##### -Null Hypothesis: Age and Internet use in next 12 months for current non-internet users are independent.
+##### -Alternative Hypothesis: Age and Internet use in next 12 months for current non-internet users are independent.
+
+
+```{r, message=FALSE,echo=FALSE,warning=FALSE}
+#Age group and internet use
+
+chi_df$ageGroup[chi_df$ageGroup== "1"] <- "16 to 24"
+
+chi_df$ageGroup[chi_df$ageGroup== "2"] <- "25 to 34"
+
+chi_df$ageGroup[chi_df$ageGroup== "3"] <- "35 to 44 "
+
+chi_df$ageGroup[chi_df$ageGroup== "4"] <- "45 to 54"
+
+chi_df$ageGroup[chi_df$ageGroup== "5"] <- "55 to 64 "
+
+chi_df$ageGroup[chi_df$ageGroup== "6"] <- "65 and older"
+
+#creating dummy data frame to create table
+
+fk_data2 <- data.frame(x1 = chi_df$ageGroup ,
+
+x2 = chi_df$internetUse_in_next12months)
+
+#creating contingency table
+
+table_2 <- table(fk_data2$x1, fk_data2$x2)
+
+#computing chisq static
+
+chisq_2 <- chisq.test(table_2)
+
+chisq_2
+
+#printing X^2
+
+#chisq_2$statistic
+
+expected <- round(chisq_2$expected,2)
+table_2 %>%
+  kbl(caption = "Contingency table of observed values for age group and internet use in next 12 month") %>%
+  kable_paper("hover", full_width = F)
+
+expected %>%
+  kbl(caption = "Contingency table of expected values for age group and internet use in next 12 month") %>%
+  kable_paper("hover", full_width = F)
+# printing the p-value
+
+#chisq_2$p.value
+contrib_2 <- 100*chisq_2$residuals^2/chisq_2$statistic
+contrib_2 <- round(contrib_2, 3)
+corrplot(contrib_2, is.cor = FALSE)
+
+if (chisq_2$p.value <= sigLevel ){
+
+print("Reject the null hypothesis. Age and future internet use are not independent of each other. There is some relationship between age and use of internet")
+
+} else {
+
+print("Fail to reject the null.")
+
+}
+```
+
+#### Chi Square Test of Independence : Province and Internet use in next 12 months
+
+##### -Null Hypothesis: Province and Internet use in next 12 months for current non-internet users are independent.
+##### -Alternative Hypothesis: Province and Internet use in next 12 months for current non-internet users are independent.
+```{r, message=FALSE,echo=FALSE,warning=FALSE}
+#province and internet use
+
+chi_df$PROVINCE[chi_df$PROVINCE== "10"] <- "Newfoundland and Labrador"
+
+chi_df$PROVINCE[chi_df$PROVINCE== "11"] <- "Prince Edward Island"
+
+chi_df$PROVINCE[chi_df$PROVINCE== "12"] <- "Nova Scotia"
+
+chi_df$PROVINCE[chi_df$PROVINCE== "13"] <- "New Brunswick "
+
+chi_df$PROVINCE[chi_df$PROVINCE== "24"] <- "Quebec"
+
+chi_df$PROVINCE[chi_df$PROVINCE== "35"] <- "Ontario"
+
+chi_df$PROVINCE[chi_df$PROVINCE== "46"] <- "Manitoba"
+
+chi_df$PROVINCE[chi_df$PROVINCE== "47"] <- "Saskatchewan"
+
+chi_df$PROVINCE[chi_df$PROVINCE== "48"] <- "Alberta"
+
+chi_df$PROVINCE[chi_df$PROVINCE== "59"] <- "British Columbia"
+
+#creating dummy data frame to create table
+
+fk_data3 <- data.frame(x1 = chi_df$PROVINCE ,
+
+x2 = chi_df$internetUse_in_next12months)
+
+#creating contingency table
+
+table_3 <- table(fk_data3$x1, fk_data3$x2)
+
+
+#computing chisq static
+
+chisq_3 <- chisq.test(table_3)
+
+chisq_3
+
+#printing X^2
+
+#chisq_3$statistic
+
+# printing the p-value
+
+#chisq_3$p.value
+
+expected <- round(chisq_3$expected,2)
+table_3 %>%
+  kbl(caption = "Contingency table of observed values for Province and internet use in next 12 month") %>%
+  kable_paper("hover", full_width = F)
+
+expected %>%
+  kbl(caption = "Contingency table of expected values for Province and internet use in next 12 month") %>%
+  kable_paper("hover", full_width = F)
+
+if (chisq_3$p.value <= sigLevel ){
+
+print("Reject the null.")
+
+} else {
+
+print("Fail to reject the null hypothesis. Province and internet use in next 12 months are independent of each other ")
+
+}
+```
+
+#### Chi Square Test of Independence : Education level and Internet use in next 12 months
+
+##### -Null Hypothesis: Education level and Internet use in next 12 months for current non-internet users are independent.
+##### -Alternative Hypothesis: Education level and Internet use in next 12 months for current non-internet users are independent.
+```{r,message=FALSE,echo=FALSE,warning=FALSE}
+#Education level and internet use
+
+chi_df$eduLevel[chi_df$eduLevel== "1"] <- "High school or less"
+
+chi_df$eduLevel[chi_df$eduLevel== "2"] <- "College or some post-secondary"
+
+chi_df$eduLevel[chi_df$eduLevel== "3"] <- "University certificate or degree"
+
+#creating dummy data frame to create table
+
+fk_data4 <- data.frame(x1 = chi_df$eduLevel ,
+
+x2 = chi_df$internetUse_in_next12months)
+
+#creating contingency table
+
+table_4 <- table(fk_data4$x1, fk_data4$x2)
+
+#computing chisq static
+
+chisq_4 <- chisq.test(table_4)
+chisq_4
+
+#printing X^2
+
+#chisq_4$statistic
+
+# printing the p-value
+
+#chisq_4$p.value
+
+contrib_4 <- 100*chisq_4$residuals^2/chisq_4$statistic
+contrib_4 <- round(contrib_4, 3)
+corrplot(contrib_4, is.cor = FALSE)
+
+expected <- round(chisq_4$expected,2)
+#knitr::kable(table_4, format = "markdown", caption = "Contingency table of observed values for Education level and internet use in next 12 month")
+#knitr::kable(expected, format = "markdown", caption = "Contingency table of expected values for Education Level and internet use in next 12 month")
+
+table_4 %>%
+  kbl(caption = "Contingency table of observed values for Education level and internet use in next 12 month") %>%
+  kable_paper("hover", full_width = F)
+
+expected %>%
+  kbl(caption = "Contingency table of expected values for Education level and internet use in next 12 month") %>%
+  kable_paper("hover", full_width = F)
+
+if (chisq_4$p.value <= sigLevel ){
+
+print("Reject the null. Education level and future internet use are not independent of each other. There is some relationship between education level  and use of internet")
+
+} else {
+
+print("Fail to reject the null.")
+
+}
+```
+
+#### Chi Square Test of Independence : Household type and Internet use in next 12 months
+
+##### -Null Hypothesis: Housegold type and Internet use in next 12 months for current non-internet users are independent.
+##### -Alternative Hypothesis: Household type and Internet use in next 12 months for current non-internet users are independent.
+
+
+```{r,message=FALSE,echo=FALSE,warning=FALSE}
+# type of household and internet use
+
+chi_df$household_type[chi_df$household_type== "1"] <- "Single_family_unmarried_under_16"
+
+chi_df$household_type[chi_df$household_type== "2"] <- "Single_family_without_unmarried_under_16"
+
+chi_df$household_type[chi_df$household_type== "3"] <- "One person households"
+
+chi_df$household_type[chi_df$household_type== "4"] <- "Multi family households"
+
+#creating dummy data frame to create table
+
+fk_data5 <- data.frame(x1 = chi_df$household_type ,
+
+x2 = chi_df$internetUse_in_next12months)
+
+#creating contingency table
+
+table_5 <- table(fk_data5$x1, fk_data5$x2)
+
+
+#computing chisq static
+
+chisq_5 <- chisq.test(table_5)
+
+chisq_5
+
+#printing X^2
+
+#chisq_5$statistic
+
+# printing the p-value
+
+# chisq_5$p.value
+expected <- round(chisq_5$expected,2)
+table_5 %>%
+  kbl(caption = "Contingency table of observed values for household type and internet use in next 12 month") %>%
+  kable_paper("hover", full_width = F)
+
+expected %>%
+  kbl(caption = "Contingency table of expected values for household type and internet use in next 12 month") %>%
+  kable_paper("hover", full_width = F)
+
+
+if (chisq_5$p.value <= sigLevel ){
+
+print("Reject the null hypothesis. Household type and internet use are independent of each other")
+
+} else {
+
+print("Fail to reject the null.")
+
+}
+```
+
+
+#### Chi Square Test of Independence : People in household and Internet use in next 12 months
+
+##### -Null Hypothesis:People in household and Internet use in next 12 months for current non-internet users are independent.
+##### -Alternative Hypothesis: People in household and Internet use in next 12 months for current non-internet users are independent.
+
+```{r,message=FALSE,echo=FALSE,warning=FALSE}
+# people in household and internet use
+
+chi_df$people_in_household[chi_df$people_in_household== "1"] <- "1 person"
+
+chi_df$people_in_household[chi_df$people_in_household== "2"] <- "2 persons"
+
+chi_df$people_in_household[chi_df$people_in_household== "3"] <- "3 persons"
+
+chi_df$people_in_household[chi_df$people_in_household== "4"] <- "4 or more persons"
+
+#creating dummy data frame to create table
+
+fk_data6 <- data.frame(x1 = chi_df$people_in_household ,
+
+x2 = chi_df$internetUse_in_next12months)
+
+#creating contingency table
+
+table_6 <- table(fk_data6$x1, fk_data6$x2)
+
+
+#computing chisq static
+
+chisq_6 <- chisq.test(table_6)
+
+chisq_6
+
+#printing X^2
+
+#chisq_6$statistic
+
+# printing the p-value
+
+#chisq_6$p.value
+contrib_6 <- 100*chisq_6$residuals^2/chisq_6$statistic
+contrib_6 <- round(contrib_6, 3)
+corrplot(contrib_6, is.cor = FALSE)
+
+expected <- round(chisq_6$expected,2)
+table_6 %>%
+  kbl(caption = "Contingency table of observed values for people in household and internet use in next 12 month") %>%
+  kable_paper("hover", full_width = F)
+
+expected %>%
+  kbl(caption = "Contingency table of expected values for people in household and internet use in next 12 month") %>%
+  kable_paper("hover", full_width = F)
+
+
+if (chisq_6$p.value <= sigLevel ){
+
+print("Reject the null hypothesis. People in the household and future internet use are not independent of each other. There is some relationship between people in household  and use of internet")
+
+} else {
+
+print("Fail to reject the null.")
+
+}
+```
+
+
+#### Chi Square Test of Independence : Level of education in household and Internet use in next 12 months
+
+##### -Null Hypothesis:People in household and Internet use in next 12 months for current non-internet users are independent.
+##### -Alternative Hypothesis: People in household and Internet use in next 12 months for current non-internet users are independent.
+```{r,message=FALSE,echo=FALSE,warning=FALSE}
+#level of education in household and internet use
+
+chi_df$education_in_household[chi_df$education_in_household== "1"] <- "High school or less"
+
+chi_df$education_in_household[chi_df$education_in_household== "2"] <- "College or some post-secondary"
+
+chi_df$education_in_household[chi_df$education_in_household== "3"] <- "University certificate or degree"
+
+#creating dummy data frame to create table
+
+fk_data7 <- data.frame(x1 = chi_df$education_in_household ,
+
+x2 = chi_df$internetUse_in_next12months)
+
+#creating contingency table
+
+table_7 <- table(fk_data7$x1, fk_data7$x2)
+
+
+#computing chisq static
+
+chisq_7 <- chisq.test(table_7)
+
+chisq_7
+
+#printing X^2
+
+#chisq_7$statistic
+
+# printing the p-value
+
+#chisq_7$p.value
+
+contrib_7 <- 100*chisq_7$residuals^2/chisq_7$statistic
+contrib_7 <- round(contrib_7, 3)
+corrplot(contrib_7, is.cor = FALSE)
+
+expected <- round(chisq_6$expected,2)
+table_7 %>%
+  kbl(caption = "Contingency table of observed values for education level in household and internet use in next 12 month") %>%
+  kable_paper("hover", full_width = F)
+
+expected %>%
+  kbl(caption = "Contingency table of expected values for education level in household and internet use in next 12 month") %>%
+  kable_paper("hover", full_width = F)
+
+if (chisq_7$p.value <= sigLevel ){
+
+print("Reject the null hypohesis. Education level in the household and future internet use are not independent of each other. There is some relationship between education level in household  and use of internet")
+
+} else {
+
+print("Fail to reject the null.")
+
+}
+
+
+```
+- *Findings* : On applying the chi-square test, following findings were observed: 
+
+* For `gender`, `age`, `education level`, `household type`, `people in household` and `highest level of education in household` and `internet usage in the next 12 months`, we have a p-value of less than 0.05 significance level. So, we reject the null hypothesis and conclude that they `have a significant relationship`. 
+
+* For` province` and `internet use in the next 12 months`, we have a p-value of 0.36 which is more than 0.05 significance level. So, we fail to reject the null hypothesis and conclude that `they don’t have a significant relationship.` 
+
+## Logistic regression
+- *Aim* : 
+To predict the factors that impact a person's likelihood of using internet in the next 12 months depending on various reasons such as cost,limited access,difficult to use, not needed,not enough time, lack of skills, not interested and senior.
+
+- *Explanation* :For logistic regression,The values have been preprocessed in R, the response value 0 means NO, and 1 means YES. Out of 5440 non users, 301 intend to use internet in the next 12 months from any location while the remaining don't.
+- 1) From the summary of model1, it is evident that reason : cost, difficult to Use, reason Lack of Skills, reason limited Access are not statistically significant and they don't have significant impact on the model as their p value is less than 0.05
+- 2)From the summary of model 2, it is evident that it is a better model : a) Its R-square value is more than model 1 and 
+b) reason : no interest,not enough time, not needed and senior are statistically significant as their p value is less than 0.05.
+- 3) 
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+#Logistic Regression:
+library(stargazer)
+library(caret)
+df <- read.csv("df.csv", header = TRUE, sep = ",") 
+
+df$internetUse_in_next12months[df$internetUse_in_next12months == 2] <- 0
+
+df$reason_cost[df$reason_cost == 2] <- 0
+
+df$reason_limitedAccess[df$reason_limitedAccess == 2] <- 0
+
+df$reason_difficultUse[df$reason_difficultUse == 2] <- 0
+
+df$reason_notNeeded[df$reason_notNeeded == 2] <- 0
+
+df$reason_notEnoughTime[df$reason_notEnoughTime == 2] <- 0
+
+df$reason_LackofSkills[df$reason_LackofSkills == 2] <- 0
+
+df$reason_noInterest[df$reason_noInterest == 2] <- 0
+
+df$reason_senior[df$reason_senior == 2] <- 0
+
+#Number of users that intend to use internet :
+sum(df$internetUse_in_next12months)
+
+# Partitioning of data into training and testing data
+
+set.seed(1)
+
+trainingrows <- sample(nrow(df), nrow(df) * 0.8)
+
+trainingdata <- df[trainingrows, ]
+
+testdata <- df[-trainingrows, ]
+
+#Creating first model including all the reasons in the regression
+
+model_1 <-glm(internetUse_in_next12months ~ reason_cost + reason_difficultUse + reason_LackofSkills + reason_limitedAccess + reason_noInterest +reason_notEnoughTime + reason_notNeeded + reason_senior,
+              
+              data = trainingdata, family = binomial(link = "logit"))
+#summary(model_1)
+
+
+#Therefore, eliminating statistically non-significant reasons in model 2.
+
+#Model_2
+
+model_2 <-glm(internetUse_in_next12months ~ reason_noInterest +reason_notEnoughTime + reason_notNeeded + reason_senior,
+              
+              data = trainingdata, family = binomial(link = "logit"))
+
+#summary(model_2)
+
+model <- list(model_1,model_2)
+stargazer(model, title="Regression Results",type = "text", keep.stat = c("n","rsq"),no.space = TRUE)
+
+#predict
+
+#When we look at the predict column at the end in training data , we notice negative values.
+
+#The negative coefficient simply implies that the probability that the event identified by the Dependent Variable ( Usage in next 12 months) happens decreases as the value of the Independent variable ( Various reasons for non usage) increases.
+
+#Hence, we mask the negative values into 0,1 for better understanding
+
+#trainingdata$predict <- ifelse(trainingdata$predict > min(trainingdata$predict),1,0)
+pred <- predict(model_2,testdatatype = "response")
+summary(pred)
+trainingdata$predict<- pred
+#trainingdata$predict
+trainingdata$predict <- ifelse(trainingdata$predict < -2.5,0,1)
+
+#Confusion matrix
+library(caret)
+cm<- confusionMatrix(as.factor(trainingdata$predict), as.factor(trainingdata$internetUse_in_next12months), positive = "1")
+cm
+                
+            
+```
+
+
+
+
+
+## Decision Tree
+- *Aim* : To predict the 'probability of a person using internet in the next 12 months from any location' based on demographics such as Age, Sex, Education Level and labour force status. 
+
+- *Explanation* :
+1) At the top,(5.5%) is the overall `probability of current Non-users that will be using internet in the next 12 months from any location.`
+
+2) This node asks whether the person’s labour force status is “Cant work”. If yes, then you go down to the root’s left child node. `3884 number of people “Cant work” and has 3.6 % probability of using internet.` 
+
+3) The second node asks if the “unable to work Canadian” is aged 65 or more. `If yes, then the chance of using internet in future is 2.6%. ` 
+
+4) Similarly, we go down the decision tree to understand the factors that impact likelihood of using internet in the next 12 months. 
+
+```{r,echo=FALSE,message=FALSE, warning=FALSE}
+
+df <- read.csv("df.csv", header = TRUE, sep = ",")  
+df$sex[df$sex == 1] <- "M"
+df$sex[df$sex == 2] <- "F"
+#df$is_student[df$is_student == 1] <- "M"
+#df$is_student[df$is_student == 1] <- "M"
+
+df$eduLevel[df$eduLevel == 1] <- "highschool"
+df$eduLevel[df$eduLevel == 2] <- "clg"
+df$eduLevel[df$eduLevel == 3] <- "uni "
+df$ageGroup[df$ageGroup == 1]<- "16 - 24"
+df$ageGroup[df$ageGroup == 2]<- "25 - 34"
+df$ageGroup[df$ageGroup == 3]<- "35 - 44"
+df$ageGroup[df$ageGroup == 4]<- "45 - 54"
+df$ageGroup[df$ageGroup == 5]<- "55 - 64"
+df$ageGroup[df$ageGroup == 6]<- "65>"
+df$labour_force_status[df$labour_force_status == 1] <-"employed"
+df$labour_force_status[df$labour_force_status == 2] <-"unemployed"
+df$labour_force_status[df$labour_force_status == 3] <-"cant work"
+df$internetUse_in_next12months[df$internetUse_in_next12months == 2] <- 0
+df$internetUse_in_next12months[df$internetUse_in_next12months == 1] <- 1
+#df
+library(rpart)
+library(rpart.plot)
+
+tree <- rpart(internetUse_in_next12months ~ sex + ageGroup + eduLevel + labour_force_status,
+              cp=0.001,
+              data = df)
+rpart.plot(tree, type=1, extra=1, clip.right.labs=FALSE, 
+           varlen=10, faclen=5)
+
+options(repr.plot.width = 35, repr.plot.height = 15)
+#newdata <- data.frame(ageGroup = "35 - 44", sex = "F",eduLevel="highschool",labour_force_status = "employed" )
+#predict(tree,newdata=newdata,type='vector') 
+```
+
+- *Findings* : 
+Canadians that have 
+- labour workforce status=  “employeed or unemployeed”, 
+education level = "University degree"
+age group = " 25 to 44 or 65 and above"
+ have the `highest probability (39%) of using the internet in the next 12 months.`
+
+* Canadians that have
+-labour workforce status = “Cant/unable to work”, 
+Age group = "65 and above"
+have `lowest probability (only 2.6%) of using internet in the next 12 months.`
+
+# CONCLUSION 
+
+
+
+
+
+
+
